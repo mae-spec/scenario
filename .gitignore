@@ -1,0 +1,14 @@
+# Données locales (scénarios, base) : ne jamais les versionner
+data/
+*.db
+*.db-wal
+*.db-shm
+sauvegardes/
+.env
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.tar

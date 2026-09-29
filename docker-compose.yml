@@ -1,0 +1,29 @@
+# Déploiement sur le NAS : docker compose up -d --build
+# Les réglages se font dans le fichier .env (voir .env.example).
+services:
+  scenario:
+    build: .
+    image: scenario-comparateur:1.0.0
+    container_name: scenario-comparateur
+    restart: unless-stopped
+    # Utilisateur du NAS propriétaire du dossier de données (commande « id » en SSH)
+    user: "${PUID:-1000}:${PGID:-1000}"
+    ports:
+      # N'écoute que sur l'adresse du NAS dans le réseau local
+      - "${BIND_IP:-10.10.30.56}:${PORT:-8080}:8080"
+    volumes:
+      - "${DATA_DIR:-./data}:/data"
+    environment:
+      SCENARIO_USER: "${SCENARIO_USER:-scenario}"
+      SCENARIO_PASSWORD: "${SCENARIO_PASSWORD:-}"
+      SCENARIO_MAX_UPLOAD_MB: "${SCENARIO_MAX_UPLOAD_MB:-50}"
+    # Durcissement : système de fichiers en lecture seule, aucun privilège
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    dns:
+      - 127.0.0.1
