@@ -80,7 +80,7 @@ Prérequis : Docker / Container Manager (Synology) ou Container Station (QNAP).
    → *Utiliser le docker-compose.yml existant* → *Suivant* → *Terminé*.
    **QNAP (Container Station)** : *Applications* → *Créer* → coller le contenu de
    `docker-compose.yml` (et remplacer les variables `${…}` par vos valeurs).
-4. Ouvrir **http://10.10.30.56:8080** depuis un poste du réseau local.
+4. Ouvrir **http://10.10.30.56:8765** depuis un poste du réseau local.
 
 Le build télécharge l'image Python et 4 bibliothèques depuis les dépôts officiels
 (téléchargement uniquement, rien n'est envoyé). Ensuite, l'application tourne sans Internet.
@@ -102,7 +102,7 @@ docker compose up -d                             # sans --build
 Python 3.10 ou plus récent :
 
 ```sh
-./scripts/run-sans-docker.sh     # écoute sur 10.10.30.56:8080, données dans ./data
+./scripts/run-sans-docker.sh     # écoute sur 10.10.30.56:8765, données dans ./data
 ```
 
 ## Configuration
@@ -110,7 +110,7 @@ Python 3.10 ou plus récent :
 | Variable (.env)          | Défaut        | Rôle                                                   |
 |--------------------------|---------------|--------------------------------------------------------|
 | `BIND_IP`                | `10.10.30.56` | Adresse du NAS sur laquelle le port est ouvert         |
-| `PORT`                   | `8080`        | Port d'accès                                           |
+| `PORT`                   | `8765`        | Port d'accès (8080 est souvent déjà pris, ex. Kitsu)   |
 | `DATA_DIR`               | `./data`      | Dossier des données sur le NAS                         |
 | `PUID` / `PGID`          | `1000`        | Utilisateur propriétaire du dossier de données         |
 | `SCENARIO_USER`          | `scenario`    | Identifiant de connexion                               |

@@ -10,7 +10,7 @@ services:
     user: "${PUID:-1000}:${PGID:-1000}"
     ports:
       # N'écoute que sur l'adresse du NAS dans le réseau local
-      - "${BIND_IP:-10.10.30.56}:${PORT:-8080}:8080"
+      - "${BIND_IP:-10.10.30.56}:${PORT:-8765}:8080"
     volumes:
       - "${DATA_DIR:-./data}:/data"
     environment:
