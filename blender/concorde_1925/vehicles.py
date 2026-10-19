@@ -25,6 +25,7 @@ from dataclasses import dataclass
 import bmesh
 import bpy
 
+import geo
 from helpers import add_box, add_cylinder, add_sphere, collection, link
 from materials import car_paint
 
@@ -489,26 +490,27 @@ def make_path(name, points, coll, frame_obj):
 ROUTES = {
     # Champs-Élysées → rue de Rivoli (vers l'est), au sud de l'obélisque
     "CE_VERS_RIVOLI": [(-1100, -8), (-400, -8), (-170, -10), (-60, -22),
-                       (0, -24), (60, -22), (150, 20), (175, 118),
-                       (250, 122), (1300, 122)],
+                       (0, -24), (60, -22), (140, -18), (172, 0),
+                       (176, 100), (250, 122), (1300, 122)],
     # Quai des Tuileries → Champs-Élysées (vers l'ouest), au nord de l'obélisque
-    "QUAI_VERS_CE": [(1200, -150), (400, -150), (230, -140), (150, -60),
-                     (60, 24), (0, 26), (-60, 24), (-170, 10), (-400, 8),
-                     (-1100, 8)],
+    "QUAI_VERS_CE": [(1200, -150), (400, -150), (230, -140), (172, -30),
+                     (150, 20), (60, 24), (0, 26), (-60, 24), (-170, 10),
+                     (-400, 8), (-1100, 8)],
     # Rue Royale → pont de la Concorde (vers le sud), à l'ouest de l'axe
-    "ROYALE_VERS_PONT": [(-6, 650), (-6, 200), (-8, 120), (-24, 72),
-                         (-24, 30), (-24, -30), (-24, -72), (-6, -120),
-                         (-5, -300), (-5, -330), (-90, -330), (-600, -330)],
+    "ROYALE_VERS_PONT": [(-6, 650), (-6, 200), (-8, 110), (-24, 64),
+                         (-24, 30), (-24, -30), (-24, -64), (-6, -110),
+                         (-5, -300), (-5, -340), (-60, -350), (-200, -385),
+                         (-400, -500)],
     # Pont → rue Royale (vers le nord), à l'est de l'axe
-    "PONT_VERS_ROYALE": [(600, -320), (80, -320), (5, -312), (5, -150),
-                         (24, -72), (24, -30), (24, 30), (24, 72), (8, 120),
+    "PONT_VERS_ROYALE": [(300, -370), (80, -352), (5, -345), (5, -150),
+                         (24, -64), (24, -30), (24, 30), (24, 64), (8, 110),
                          (6, 200), (6, 650)],
     # Devant les palais de Gabriel (vers l'ouest), puis avenue Gabriel
-    "GABRIEL_OUEST": [(600, 128), (180, 128), (60, 150), (-60, 150),
-                      (-180, 140), (-260, 140), (-900, 160)],
+    "GABRIEL_OUEST": [(600, 124), (180, 124), (60, 128), (-60, 128),
+                      (-180, 124), (-260, 130), (-900, 150)],
     # Cours la Reine / quai (vers l'est)
-    "COURS_LA_REINE_EST": [(-900, -200), (-300, -140), (-150, -125),
-                           (0, -122), (200, -150), (1200, -160)],
+    "COURS_LA_REINE_EST": [(-900, -200), (-300, -140), (-150, -128),
+                           (0, -128), (200, -150), (1200, -160)],
 }
 
 
@@ -535,7 +537,7 @@ def populate(fleet, M, frame_obj, frames=(1, 240), seed=1925):
                                                         else 7.0))
                         * rnd.uniform(0.8, 1.15))
     # Devant le Crillon : taxis en attente, voiture de maître, fourgonnette
-    v = 166.4
+    v = geo.GABRIEL_FACADE_V - 9.6
     fleet.park("taxi_g7", -100, v, math.pi, "rouge_taxi", "TAXI_G7_ATTENTE_1")
     fleet.park("taxi_g7", -94.5, v, math.pi, "rouge_taxi", "TAXI_G7_ATTENTE_2")
     fleet.park("hispano_h6", -82, v, math.pi, "bordeaux",

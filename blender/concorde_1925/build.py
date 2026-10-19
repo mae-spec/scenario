@@ -87,14 +87,14 @@ def build(args):
     _step("aménagement de la place")
     lamp_pts, rostral_pts, vertices = city.place_layout(c_place, M)
     monuments.street_furniture(c_place, M, [lamp_pts], rostral_pts)
-    for i, (v, name) in enumerate(zip(vertices, geo.CITY_STATUES)):
+    for v, name in zip(vertices, geo.PLACE_INNER_STATUES):
         rot = math.atan2(-v.y, -v.x) - math.pi / 2  # la statue regarde l'obélisque
         monuments.statue_pavilion(c_mon, M, f"STATUE_{name.upper()}", v.x, v.y,
                                   rot)
     monuments.scatter_people(c_place, M, [
         (-170, 170, geo.GABRIEL_FACADE_V - 7.5, geo.GABRIEL_FACADE_V - 1),
-        (-150, 150, 97, 105), (-150, 150, -105, -97),
-        (-15, 15, -11, 11), (-12, 12, 60, 84), (-12, 12, -84, -60)], 140)
+        (-80, 80, 77, 84), (-80, 80, -84, -77),
+        (-15, 15, -11, 11), (-12, 12, 52, 76), (-12, 12, -76, -52)], 140)
 
     _step("monuments")
     monuments.obelisk(c_mon, M)

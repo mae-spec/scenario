@@ -21,9 +21,9 @@ from __future__ import annotations
 
 import math
 
-# Obélisque de Louxor
-LAT0 = 48.865633
-LON0 = 2.321236
+# Obélisque de Louxor (Wikimedia Commons : 48° 51′ 55,71″ N, 2° 19′ 16,08″ E)
+LAT0 = 48.865475
+LON0 = 2.321133
 AXIS_AZIMUTH_DEG = 25.6  # azimut de +V (0° = nord, sens horaire)
 
 M_PER_DEG_LAT = 111_200.0
@@ -41,14 +41,25 @@ def latlon_to_place(lat: float, lon: float) -> tuple[float, float]:
 
 
 # --- La place ---------------------------------------------------------------
-# Octogone de Gabriel (ancien périmètre des fossés, comblés en 1854) : 359 × 212 m.
+# Emprise totale de la place, fossés de Gabriel compris (comblés en 1854) :
+# 359 × 212 m.
 PLACE_HALF_U = 179.5
 PLACE_HALF_V = 106.0
-PLACE_CHAMFER = 30.0  # pans coupés portant les guérites des statues des villes
+# Octogone intérieur bordé de balustrades ; les guérites des huit statues des
+# villes occupent ses sommets. Les statues de Strasbourg (48,86580 N ;
+# 2,32270 E) et de Brest (48,86650 N ; 2,32060 E) donnent le côté nord à
+# v ≈ 85 m, u ≈ ±86 m ; les fossés faisaient une vingtaine de mètres de large,
+# d'où les côtés est et ouest à u ≈ ±160 m.
+PLACE_INNER = [(86.0, -85.0), (160.0, -35.0), (160.0, 35.0), (86.0, 85.0),
+               (-86.0, 85.0), (-160.0, 35.0), (-160.0, -35.0), (-86.0, -85.0)]
+# Statue de chaque sommet de PLACE_INNER, dans le même ordre.
+PLACE_INNER_STATUES = ("Marseille", "Lyon", "Lille", "Strasbourg",
+                       "Brest", "Rouen", "Nantes", "Bordeaux")
 
-# Fontaines de Hittorff (1840), sur l'axe rue Royale / pont.
-FOUNTAIN_NORTH_V = 72.0   # Fontaine des Fleuves
-FOUNTAIN_SOUTH_V = -72.0  # Fontaine des Mers
+# Fontaines de Hittorff (1840), sur l'axe rue Royale / pont
+# (Fontaine des Fleuves : 48,865992 N ; 2,321506 E → 64 m de l'obélisque).
+FOUNTAIN_NORTH_V = 64.0   # Fontaine des Fleuves
+FOUNTAIN_SOUTH_V = -64.0  # Fontaine des Mers
 
 # Obélisque (sans le pyramidion doré, posé en 1998).
 OBELISK_SHAFT_H = 22.83
@@ -58,7 +69,9 @@ OBELISK_PEDESTAL_H = 9.2
 
 # --- Palais de Gabriel (Hôtel de la Marine à l'est, Crillon à l'ouest) ------
 # Façade sur la place (plan des colonnes) et profondeur des bâtiments.
-GABRIEL_FACADE_V = 176.0
+# Centres des bâtiments : Hôtel de la Marine (48,866778 N ; 2,323083 E) et
+# Crillon (48,867337 N ; 2,321149 E), soit v ≈ 190 m pour ~85 m de profondeur.
+GABRIEL_FACADE_V = 148.0
 GABRIEL_DEPTH = 75.0
 RUE_ROYALE_HALF_W = 14.0
 GABRIEL_WIDTH = 96.0  # chaque palais
@@ -81,8 +94,8 @@ SEINE_AXIS_LATLON = (
     (48.85840, 2.33400),  # pont du Carrousel
     (48.85960, 2.32900),  # pont Royal
     (48.86160, 2.32420),  # passerelle Solférino
-    (48.86375, 2.32000),  # pont de la Concorde
-    (48.86415, 2.31700),  # port de la Concorde
+    (48.86330, 2.32000),  # pont de la Concorde (centre : 48,8635 N ; 2,3196 E)
+    (48.86380, 2.31700),
     (48.86370, 2.31350),  # pont Alexandre-III
     (48.86300, 2.30980),  # pont des Invalides
     (48.86250, 2.30140),  # pont de l'Alma
@@ -92,8 +105,8 @@ SEINE_AXIS_LATLON = (
 SEINE_WIDTH = 135.0
 SEINE_LEVEL = -8.5
 PONT_CONCORDE_WIDTH = 15.5      # largeur d'origine (élargi à 35 m en 1930-1932)
-PALAIS_BOURBON_PORTICO_V = -345.0
-MADELEINE_V = 553.0             # centre de l'église (dans l'axe de la rue Royale)
+PALAIS_BOURBON_PORTICO_V = -365.0  # centre du palais : 48,862069 N ; 2,318681 E
+MADELEINE_V = latlon_to_place(48.87003, 2.32447)[1]  # centre de l'église
 INVALIDES_DOME = latlon_to_place(48.85500, 2.31250)
 TOUR_EIFFEL = latlon_to_place(48.85837, 2.29448)
 GRAND_PALAIS = latlon_to_place(48.86612, 2.31253)
@@ -104,11 +117,6 @@ JEU_DE_PAUME = (232.0, 88.0)
 ORANGERIE = (232.0, -98.0)
 RIVOLI_FACADE_V = 135.0         # alignement des arcades de la rue de Rivoli
 CHAMPS_ELYSEES_HALF_W = 35.0
-
-# Statues des huit villes, aux pans coupés de l'octogone (ordre depuis le
-# nord-est, sens horaire vu du ciel dans le repère place).
-CITY_STATUES = ("Lille", "Strasbourg", "Lyon", "Marseille",
-                "Bordeaux", "Nantes", "Brest", "Rouen")
 
 # --- Date et lieu de la prise de vues --------------------------------------
 # En 1925 la France applique l'heure d'été (UTC+1) du 4 avril au 4 octobre.

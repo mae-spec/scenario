@@ -26,9 +26,16 @@ La génération prend environ 15 s. Le fichier pèse environ 12 Mo (il est ignor
   (`geo.py`) : la Madeleine, le Palais-Bourbon, le dôme des Invalides (1,34 km),
   la tour Eiffel (2,1 km), le Grand et le Petit Palais, le pont Alexandre-III et le cours de la
   Seine.
-- Dimensions : octogone de Gabriel de 359 × 212 m, obélisque de 22,83 m sur socle de 9,2 m,
-  palais de Gabriel de 96 m chacun de part et d'autre de la rue Royale, colonnade de
-  12 colonnes corinthiennes entre deux avant-corps à fronton.
+- Dimensions, recalées sur les coordonnées des monuments :
+  - emprise de la place, anciens fossés compris : 359 × 212 m ;
+  - octogone intérieur à balustrades : côté nord à 85 m de l'obélisque (statues de Strasbourg
+    et de Brest), côtés est et ouest à 160 m ;
+  - fontaines à 64 m de l'obélisque, sur l'axe ;
+  - façades des palais de Gabriel à 148 m ;
+  - centre du pont de la Concorde à 247 m, Palais-Bourbon à 420 m, Madeleine à 562 m ;
+  - obélisque de 22,83 m sur un socle de 9,2 m ;
+  - palais de Gabriel de 96 m chacun de part et d'autre de la rue Royale, avec une colonnade
+    de 12 colonnes corinthiennes entre deux avant-corps à fronton.
 - Le **Crillon** occupe la partie ouest du palais ouest (côté rue Boissy-d'Anglas) ;
   l'Automobile Club de France est côté rue Royale. Le palais est est l'Hôtel de la Marine.
 

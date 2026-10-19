@@ -11,7 +11,7 @@ from mathutils import Vector
 
 import geo
 from helpers import (add_box, add_cylinder, add_prism, add_sphere,
-                     add_wall_xz, inset_outline, object_from_bmesh, octagon)
+                     add_wall_xz, inset_outline, object_from_bmesh)
 
 # --- Seine -------------------------------------------------------------------
 
@@ -185,11 +185,11 @@ def bridges(coll, M):
 
 def place_layout(coll, M):
     """Terre-pleins, balustrades, refuges ; renvoie les points d'éclairage."""
-    outer = octagon(geo.PLACE_HALF_U, geo.PLACE_HALF_V, geo.PLACE_CHAMFER)
+    outer = geo.PLACE_INNER
     inner = inset_outline(outer, 10.0)
     bm = bmesh.new()   # 0 trottoir, 1 pierre (balustrades)
     lamp_pts, rostral_pts, vertices, baluster_pts = [], [], [], []
-    gaps = {3: 17.0, 7: 13.0}      # rue Royale au nord, pont au sud
+    gaps = {3: 17.0, 7: 17.0}      # rue Royale au nord, pont au sud
     skip = {1, 5}                  # côtés est (Tuileries) et ouest (Champs-Élysées)
     for i in range(8):
         a0, a1 = Vector(outer[i]), Vector(outer[(i + 1) % 8])
@@ -438,14 +438,14 @@ def _free_for_building(u, v, w, d):
         if in_river(x, y, 30):
             return False
         # place, jardins des Champs-Élysées, Tuileries, esplanade des Invalides
-        if -720 < x < 1000 and -150 < y < geo.GABRIEL_FACADE_V and not (
+        if -720 < x < 1000 and -150 < y < geo.GABRIEL_FACADE_V - 6 and not (
                 x > 700 and y > 110):
             return False
         if x > 150 and -170 < y < geo.RIVOLI_FACADE_V and x < 1100:
             return False
         if x < -150 and abs(y) < 210 and x > -1200:
             return False   # Champs-Élysées et leurs jardins
-        if -110 < x < 110 and 150 < y < 680:
+        if -110 < x < 110 and geo.GABRIEL_FACADE_V < y < 680:
             if abs(x) < 70 and y < 470:
                 if abs(x) < 15:
                     return False
@@ -462,7 +462,8 @@ def _free_for_building(u, v, w, d):
             return False   # place du Palais-Bourbon
         if (x + 1418) ** 2 + (y + 1575) ** 2 < 330 ** 2:
             return False   # Champ-de-Mars / Trocadéro
-    if -110 < u < 110 and 150 < v < 260:
+    if (-110 < u < 110 and geo.GABRIEL_FACADE_V - 26 < v
+            < geo.GABRIEL_FACADE_V + geo.GABRIEL_DEPTH + 10):
         return False       # palais de Gabriel (construits à part)
     return True
 
@@ -489,7 +490,7 @@ def city_blocks(coll, M, seed=1925):
         u += w + 0.3
     # Palais de Gabriel : immeubles derrière, rue Boissy-d'Anglas, Saint-Florentin
     for cu in (-140.0, 140.0):
-        _block(bm, cu, 215, 50, 75, 20, rnd)
+        _block(bm, cu, geo.GABRIEL_FACADE_V + 40, 50, 75, 20, rnd)
     # Remplissage par anneaux concentriques
     for ring in range(1, 46):
         r = 150 + ring * 55
