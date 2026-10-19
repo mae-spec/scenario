@@ -159,9 +159,21 @@ def previews(cams, folder, scale, samples):
     scene.camera = cams["CAM_01_CARTE_POSTALE"]
 
 
+def _viewport_overlays():
+    """Masque les lignes de relation : les ~4 500 enfants de REPERE_PLACE
+    tireraient chacun un pointillé vers l'obélisque."""
+    for screen in bpy.data.screens:
+        for area in screen.areas:
+            for space in area.spaces:
+                if space.type == "VIEW_3D":
+                    space.overlay.show_relationship_lines = False
+                    space.clip_end = 10000.0
+
+
 def main():
     args = _args()
     cams = build(args)
+    _viewport_overlays()
     out = os.path.abspath(args.out)
     os.makedirs(os.path.dirname(out), exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=out, compress=True)
