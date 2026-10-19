@@ -175,3 +175,8 @@ app/
   static/       interface web (sans dépendance)
 tests/          tests (tous formats, moteur, API, garanties hors ligne)
 ```
+
+## Autres contenus du dépôt
+
+- [`blender/concorde_1925/`](blender/concorde_1925/README.md) : générateur de la scène Blender
+  « Place de la Concorde, juin 1925 » (contrechamp sur le Crillon, caméras ARRI Alexa 65 en 2,40:1).
