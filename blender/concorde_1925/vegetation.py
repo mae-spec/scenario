@@ -70,29 +70,31 @@ def plant(coll, M, seed=1925):
             while v <= v1:
                 if rnd.random() < keep:
                     pts.append((u + rnd.uniform(-jitter, jitter),
-                                v + rnd.uniform(-jitter, jitter)))
+                                v + rnd.uniform(-jitter, jitter), 0.0))
                 v += step
             u += step
 
-    def row(p0, p1, step):
+    def row(p0, p1, step, z=0.0):
         a, b = Vector(p0), Vector(p1)
         n = int((b - a).length / step)
         for i in range(n + 1):
             p = a.lerp(b, i / max(1, n))
-            pts.append((p.x, p.y))
+            pts.append((p.x, p.y, z))
 
     hw = geo.CHAMPS_ELYSEES_HALF_W
     # Jardins des Champs-Élysées (bosquets autour des pavillons, pelouses)
-    grid(-1150, -205, hw + 14, 175, 11, keep=0.75, jitter=3)
-    grid(-1150, -205, -230, -hw - 14, 11, keep=0.75, jitter=3)
+    w0 = geo.MARLY_U - 15
+    grid(-1150, w0, hw + 14, 175, 11, keep=0.75, jitter=3)
+    grid(-1150, w0, -230, -hw - 14, 11, keep=0.75, jitter=3)
     for s in (-1, 1):
-        row((-1300, s * (hw + 4)), (-200, s * (hw + 4)), 9)
-        row((-1300, s * (hw + 10)), (-200, s * (hw + 10)), 9)
+        row((-1300, s * (hw + 4)), (w0, s * (hw + 4)), 9)
+        row((-1300, s * (hw + 10)), (w0, s * (hw + 10)), 9)
     # Tuileries : quinconces de marronniers au-delà du Grand Bassin octogonal
-    grid(420, 1150, 32, 100, 9, keep=0.95, jitter=1)
-    grid(420, 1150, -100, -32, 9, keep=0.95, jitter=1)
-    for s in (-1, 1):
-        row((200, s * 104), (1150, s * 104), 8)
+    grid(420, 1150, 32, 86, 9, keep=0.95, jitter=1)
+    grid(420, 1150, -86, -32, 9, keep=0.95, jitter=1)
+    # alignements sur les terrasses (5 m au-dessus du jardin)
+    for s, v in ((1, 98.0), (-1, -98.0)):
+        row((250, v), (455, v), 8, z=5.0)
     # Quais (rangées de platanes) et Cours la Reine
     for k, p in enumerate(RIVER[:-1]):
         q = RIVER[k + 1]
@@ -107,7 +109,7 @@ def plant(coll, M, seed=1925):
                 x = c + n * side * off
                 if abs(x.x) < 30:
                     continue  # débouché du pont de la Concorde
-                pts.append((x.x, x.y))
+                pts.append((x.x, x.y, 0.0))
     # Esplanade des Invalides : quatre rangées dans l'axe
     du, dv = geo.INVALIDES_DOME
     bridge = Vector(geo.PONT_ALEXANDRE_III)
@@ -118,11 +120,11 @@ def plant(coll, M, seed=1925):
         row(base + axis_n * off, bridge - axis.normalized() * 90 + axis_n * off,
             10)
     n = 0
-    for u, v in pts:
+    for u, v, z in pts:
         if not _ok(u, v):
             continue
         p = rnd.choice(protos)
-        o = instance(p, f"ARBRE_{n:04d}", coll, (u, v, 0),
+        o = instance(p, f"ARBRE_{n:04d}", coll, (u, v, z),
                      rnd.uniform(0, math.tau), rnd.uniform(0.85, 1.25))
         o.hide_viewport = False
         n += 1

@@ -93,8 +93,8 @@ def build(args):
                                   rot)
     monuments.scatter_people(c_place, M, [
         (-170, 170, geo.GABRIEL_FACADE_V - 7.5, geo.GABRIEL_FACADE_V - 1),
-        (-80, 80, 77, 84), (-80, 80, -84, -77),
-        (-15, 15, -11, 11), (-12, 12, 52, 76), (-12, 12, -76, -52)], 140)
+        (-60, 60, 111, 118), (-60, 60, -118, -111),
+        (-15, 15, -11, 11), (-12, 12, 50, 74), (-12, 12, -74, -50)], 140)
 
     _step("monuments")
     monuments.obelisk(c_mon, M)

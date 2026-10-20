@@ -21,9 +21,9 @@ from __future__ import annotations
 
 import math
 
-# Obélisque de Louxor (Wikimedia Commons : 48° 51′ 55,71″ N, 2° 19′ 16,08″ E)
-LAT0 = 48.865475
-LON0 = 2.321133
+# Obélisque de Louxor (coordonnée fournie par la production)
+LAT0 = 48.8654948
+LON0 = 2.3211384
 AXIS_AZIMUTH_DEG = 25.6  # azimut de +V (0° = nord, sens horaire)
 
 M_PER_DEG_LAT = 111_200.0
@@ -41,25 +41,32 @@ def latlon_to_place(lat: float, lon: float) -> tuple[float, float]:
 
 
 # --- La place ---------------------------------------------------------------
-# Emprise totale de la place, fossés de Gabriel compris (comblés en 1854) :
-# 359 × 212 m.
-PLACE_HALF_U = 179.5
-PLACE_HALF_V = 106.0
+# La place mesure 212 m d'est en ouest (de la grille des Tuileries aux chevaux
+# de Marly) et 359 m du nord au sud (des façades de Gabriel au parapet de la
+# Seine). Positions de contrôle, en mètres dans le repère place :
+#   grille des Tuileries / pont tournant (48,865089 N ; 2,322375 E) → u = +101
+#   Renommée de Coysevox (48,865278 N ; 2,322500 E)               → (100, 21)
+#   statue de Strasbourg (48,86580 N ; 2,32270 E)                  → (88, 80)
+#   statue de Brest (48,86650 N ; 2,32060 E)                       → (-84, 84)
+#   statue de Lille (48,86620 N ; 2,32270 E)                       → (69, 120)
+#   statue de Rouen (48,86670 N ; 2,32100 E)                       → (-68, 119)
+#   statue de Marseille (48,864223 N ; 2,321256 E)                 → (68, -122)
+# Emprise de la place, anciens fossés compris (comblés en 1854).
+PLACE_HALF_U = 106.0
+PLACE_HALF_V = 140.0
 # Octogone intérieur bordé de balustrades ; les guérites des huit statues des
-# villes occupent ses sommets. Les statues de Strasbourg (48,86580 N ;
-# 2,32270 E) et de Brest (48,86650 N ; 2,32060 E) donnent le côté nord à
-# v ≈ 85 m, u ≈ ±86 m ; les fossés faisaient une vingtaine de mètres de large,
-# d'où les côtés est et ouest à u ≈ ±160 m.
-PLACE_INNER = [(86.0, -85.0), (160.0, -35.0), (160.0, 35.0), (86.0, 85.0),
-               (-86.0, 85.0), (-160.0, 35.0), (-160.0, -35.0), (-86.0, -85.0)]
-# Statue de chaque sommet de PLACE_INNER, dans le même ordre.
-PLACE_INNER_STATUES = ("Marseille", "Lyon", "Lille", "Strasbourg",
-                       "Brest", "Rouen", "Nantes", "Bordeaux")
+# villes occupent ses sommets (ordre trigonométrique depuis le sud-est).
+PLACE_INNER = [(69.0, -120.0), (87.0, -81.0), (87.0, 81.0), (69.0, 120.0),
+               (-69.0, 120.0), (-87.0, 81.0), (-87.0, -81.0), (-69.0, -120.0)]
+PLACE_INNER_STATUES = ("Marseille", "Lyon", "Strasbourg", "Lille",
+                       "Rouen", "Brest", "Nantes", "Bordeaux")
+TUILERIES_GATE_U = 101.0
+MARLY_U = -110.0
 
 # Fontaines de Hittorff (1840), sur l'axe rue Royale / pont
-# (Fontaine des Fleuves : 48,865992 N ; 2,321506 E → 64 m de l'obélisque).
-FOUNTAIN_NORTH_V = 64.0   # Fontaine des Fleuves
-FOUNTAIN_SOUTH_V = -64.0  # Fontaine des Mers
+# (Fontaine des Fleuves : 48,865992 N ; 2,321506 E).
+FOUNTAIN_NORTH_V = 62.0   # Fontaine des Fleuves
+FOUNTAIN_SOUTH_V = -62.0  # Fontaine des Mers
 
 # Obélisque (sans le pyramidion doré, posé en 1998).
 OBELISK_SHAFT_H = 22.83
@@ -69,9 +76,10 @@ OBELISK_PEDESTAL_H = 9.2
 
 # --- Palais de Gabriel (Hôtel de la Marine à l'est, Crillon à l'ouest) ------
 # Façade sur la place (plan des colonnes) et profondeur des bâtiments.
-# Centres des bâtiments : Hôtel de la Marine (48,866778 N ; 2,323083 E) et
-# Crillon (48,867337 N ; 2,321149 E), soit v ≈ 190 m pour ~85 m de profondeur.
-GABRIEL_FACADE_V = 148.0
+# Repères : Hôtel de la Marine (48,866778 N ; 2,323083 E) → (67, 190) et
+# Crillon (48,867337 N ; 2,321149 E) → (-88, 185) ; la façade ferme la place à
+# 176 m au nord (359 m jusqu'au parapet de la Seine).
+GABRIEL_FACADE_V = 176.0
 GABRIEL_DEPTH = 75.0
 RUE_ROYALE_HALF_W = 14.0
 GABRIEL_WIDTH = 96.0  # chaque palais
@@ -94,7 +102,7 @@ SEINE_AXIS_LATLON = (
     (48.85840, 2.33400),  # pont du Carrousel
     (48.85960, 2.32900),  # pont Royal
     (48.86160, 2.32420),  # passerelle Solférino
-    (48.86330, 2.32000),  # pont de la Concorde (centre : 48,8635 N ; 2,3196 E)
+    (48.86346, 2.32000),  # pont de la Concorde (centre : 48,8635 N ; 2,3196 E)
     (48.86380, 2.31700),
     (48.86370, 2.31350),  # pont Alexandre-III
     (48.86300, 2.30980),  # pont des Invalides
@@ -109,13 +117,13 @@ PALAIS_BOURBON_PORTICO_V = -365.0  # centre du palais : 48,862069 N ; 2,318681 E
 MADELEINE_V = latlon_to_place(48.87003, 2.32447)[1]  # centre de l'église
 INVALIDES_DOME = latlon_to_place(48.85500, 2.31250)
 TOUR_EIFFEL = latlon_to_place(48.85837, 2.29448)
-GRAND_PALAIS = latlon_to_place(48.86612, 2.31253)
-PETIT_PALAIS = latlon_to_place(48.86604, 2.31476)
-PONT_ALEXANDRE_III = latlon_to_place(48.86370, 2.31350)
-# Terrasses des Tuileries : bâtiments posés au bord est de la place.
-JEU_DE_PAUME = (232.0, 88.0)
-ORANGERIE = (232.0, -98.0)
-RIVOLI_FACADE_V = 135.0         # alignement des arcades de la rue de Rivoli
+GRAND_PALAIS = latlon_to_place(48.866161, 2.312553)
+PETIT_PALAIS = latlon_to_place(48.86604, 2.31453)
+PONT_ALEXANDRE_III = latlon_to_place(48.863611, 2.313611)
+# Terrasses des Tuileries, en surplomb du bord est de la place.
+JEU_DE_PAUME = latlon_to_place(48.86583, 2.32389)
+ORANGERIE = latlon_to_place(48.86378, 2.32253)
+RIVOLI_FACADE_V = 160.0         # alignement des arcades de la rue de Rivoli
 CHAMPS_ELYSEES_HALF_W = 35.0
 
 # --- Date et lieu de la prise de vues --------------------------------------

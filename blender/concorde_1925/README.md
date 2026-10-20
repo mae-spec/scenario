@@ -26,13 +26,17 @@ La génération prend environ 15 s. Le fichier pèse environ 12 Mo (il est ignor
   (`geo.py`) : la Madeleine, le Palais-Bourbon, le dôme des Invalides (1,34 km),
   la tour Eiffel (2,1 km), le Grand et le Petit Palais, le pont Alexandre-III et le cours de la
   Seine.
-- Dimensions, recalées sur les coordonnées des monuments :
-  - emprise de la place, anciens fossés compris : 359 × 212 m ;
-  - octogone intérieur à balustrades : côté nord à 85 m de l'obélisque (statues de Strasbourg
-    et de Brest), côtés est et ouest à 160 m ;
-  - fontaines à 64 m de l'obélisque, sur l'axe ;
-  - façades des palais de Gabriel à 148 m ;
-  - centre du pont de la Concorde à 247 m, Palais-Bourbon à 420 m, Madeleine à 562 m ;
+- Origine : l'obélisque, à **48,8654948 N ; 2,3211384 E**.
+- Dimensions, recalées sur les coordonnées publiées des monuments (contrôle dans `geo.py`) :
+  - la place mesure 212 m d'est en ouest, de la grille des Tuileries (u = +101 m) aux chevaux de
+    Marly (u = −110 m), et 359 m du nord au sud, des façades de Gabriel (v = +176 m) au parapet
+    de la Seine (v ≈ −183 m) ;
+  - octogone intérieur à balustrades, allongé nord-sud, avec les guérites des statues à ses
+    sommets : Lille, Rouen, Marseille et Bordeaux à (±69 ; ±120) ; Strasbourg, Brest, Lyon et
+    Nantes à (±87 ; ±81) ;
+  - fontaines à 62 m de l'obélisque, sur l'axe ;
+  - Jeu de Paume et Orangerie sur les terrasses des Tuileries, centrés à environ 170 m à l'est ;
+  - centre du pont de la Concorde à 249 m, Palais-Bourbon à 421 m, Madeleine à 560 m ;
   - obélisque de 22,83 m sur un socle de 9,2 m ;
   - palais de Gabriel de 96 m chacun de part et d'autre de la rue Royale, avec une colonnade
     de 12 colonnes corinthiennes entre deux avant-corps à fronton.
@@ -131,4 +135,4 @@ l'axe, donc sur l'Hôtel de la Marine. Depuis le Crillon (`CAM_05`), le dôme pa
 | `vegetation.py` | Arbres |
 | `vehicles.py` | Véhicules et circulation |
 | `scene_setup.py` | Caméras Alexa 65, soleil, ciel, brume, réglages de rendu |
-| `apercus/` | Aperçus basse définition de chaque caméra |
+| `apercus/` | Aperçus basse définition de chaque caméra et vue de dessus de la place |

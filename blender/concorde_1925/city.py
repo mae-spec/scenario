@@ -189,8 +189,9 @@ def place_layout(coll, M):
     inner = inset_outline(outer, 10.0)
     bm = bmesh.new()   # 0 trottoir, 1 pierre (balustrades)
     lamp_pts, rostral_pts, vertices, baluster_pts = [], [], [], []
-    gaps = {3: 17.0, 7: 17.0}      # rue Royale au nord, pont au sud
-    skip = {1, 5}                  # côtés est (Tuileries) et ouest (Champs-Élysées)
+    # ouvertures : Tuileries (est), rue Royale (nord), Champs-Élysées (ouest), pont (sud)
+    gaps = {1: 30.0, 3: 17.0, 5: 30.0, 7: 17.0}
+    skip = set()
     for i in range(8):
         a0, a1 = Vector(outer[i]), Vector(outer[(i + 1) % 8])
         b0, b1 = Vector(inner[i]), Vector(inner[(i + 1) % 8])
@@ -238,8 +239,6 @@ def place_layout(coll, M):
             lamp_pts.append((14.5 * math.cos(a), v + 11.5 * math.sin(a)))
     # trottoirs devant les palais de Gabriel et le long des Tuileries
     add_box(bm, (0, geo.GABRIEL_FACADE_V - 4.0, 0.075), (440, 8.0, 0.15), 0)
-    for s in (-1, 1):
-        add_box(bm, (geo.PLACE_HALF_U + 4, s * 70, 0.075), (8, 70, 0.15), 0)
     obj = object_from_bmesh("TERRE_PLEINS_BALUSTRADES", bm, coll)
     obj.data.materials.append(M["trottoir"])
     obj.data.materials.append(M["pierre"])
@@ -253,27 +252,30 @@ def place_layout(coll, M):
 def tuileries_entrance(coll, M):
     """Terrasses du Jeu de Paume et de l'Orangerie, grille et Renommées."""
     bm = bmesh.new()  # 0 pierre, 1 gravier, 2 vitre, 3 ardoise
-    x0 = geo.PLACE_HALF_U + 8
-    for s, (cu, cv) in ((1, geo.JEU_DE_PAUME), (-1, geo.ORANGERIE)):
-        v_in, v_out = s * 26, s * 110
+    x0 = geo.TUILERIES_GATE_U + 5   # mur de soutènement des terrasses
+    for s, (cu, cv), length, (v_in, v_out) in (
+            (1, geo.JEU_DE_PAUME, 80.0, (92.0, 140.0)),
+            (-1, geo.ORANGERIE, 100.0, (-92.0, -148.0))):
         add_box(bm, (x0 + 175, (v_in + v_out) / 2, 2.5),
                 (350, abs(v_out - v_in), 5.0), 0)
         add_box(bm, (x0 + 175, (v_in + v_out) / 2, 5.02),
                 (348, abs(v_out - v_in) - 2, 0.04), 1)
-        # bâtiment (Jeu de Paume / Orangerie) : 100 × 18 m
-        add_box(bm, (cu, cv, 5 + 6.0), (100, 18, 12.0), 0)
-        add_prism(bm, [(cu - 50, cv - 9), (cu + 50, cv - 9), (cu + 50, cv + 9),
-                       (cu - 50, cv + 9)], 17.0, 20.0, 3,
-                  top_outline=[(cu - 47, cv - 2), (cu + 47, cv - 2),
-                               (cu + 47, cv + 2), (cu - 47, cv + 2)])
-        for k in range(12):
-            add_box(bm, (cu - 44 + k * 8, cv - s * 9.05, 11.0),
+        # bâtiment (Jeu de Paume / Orangerie), 20 m de large
+        h = length / 2
+        add_box(bm, (cu, cv, 5 + 6.0), (length, 20, 12.0), 0)
+        add_prism(bm, [(cu - h, cv - 10), (cu + h, cv - 10), (cu + h, cv + 10),
+                       (cu - h, cv + 10)], 17.0, 20.0, 3,
+                  top_outline=[(cu - h + 3, cv - 2), (cu + h - 3, cv - 2),
+                               (cu + h - 3, cv + 2), (cu - h + 3, cv + 2)])
+        for k in range(int(length / 8) - 1):
+            add_box(bm, (cu - h + 6 + k * 8, cv - s * 10.05, 11.0),
                     (2.4, 0.1, 6.5), 2)
         # pilier de la grille portant une Renommée de Coysevox
-        add_box(bm, (x0 + 2, s * 20, 3.0), (3.0, 3.0, 6.0), 0)
-        add_sphere(bm, (x0 + 2, s * 20, 7.5), 1.2, 0, 10, (1.6, 0.8, 1.0))
-        add_box(bm, (x0 + 2, s * 20 + s * 0.4, 9.0), (0.5, 3.4, 1.6), 0)
-    add_box(bm, (x0 + 700, 0, -0.05), (1400, 52, 0.1), 1)  # allée centrale
+        gx = geo.TUILERIES_GATE_U
+        add_box(bm, (gx, s * 21, 3.0), (3.0, 3.0, 6.0), 0)
+        add_sphere(bm, (gx, s * 21, 7.5), 1.2, 0, 10, (1.6, 0.8, 1.0))
+        add_box(bm, (gx, s * 21 + s * 0.4, 9.0), (0.5, 3.4, 1.6), 0)
+    add_box(bm, (x0 + 700, 0, 0.02), (1400, 52, 0.04), 1)  # allée centrale
     obj = object_from_bmesh("TUILERIES_TERRASSES", bm, coll)
     for m in (M["pierre_claire"], M["gravier"], M["vitre"], M["ardoise"]):
         obj.data.materials.append(m)
@@ -283,7 +285,7 @@ def marly_horses(coll, M):
     """Chevaux de Marly (Coustou) à l'entrée des Champs-Élysées."""
     bm = bmesh.new()
     for s in (-1, 1):
-        x, y = -geo.PLACE_HALF_U - 4, s * (geo.CHAMPS_ELYSEES_HALF_W + 4)
+        x, y = geo.MARLY_U, s * (geo.CHAMPS_ELYSEES_HALF_W + 4)
         add_box(bm, (x, y, 2.5), (5.0, 7.0, 5.0), 0)
         add_box(bm, (x, y, 5.15), (5.6, 7.6, 0.3), 0)
         add_sphere(bm, (x, y, 7.0), 1.1, 0, 12, (1.0, 2.4, 1.1))      # corps
@@ -482,7 +484,7 @@ def city_blocks(coll, M, seed=1925):
                    rnd.uniform(19, 22), rnd)
             v += d + 0.3
     # Rue de Rivoli (arcades) au nord des Tuileries
-    u = 130
+    u = 170
     while u < 1300:
         w = rnd.uniform(30, 45)
         _block(bm, u + w / 2, geo.RIVOLI_FACADE_V + 22, w, 44, 21.0, rnd,
